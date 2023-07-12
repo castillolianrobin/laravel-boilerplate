@@ -73,11 +73,11 @@ jobs:
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@v4.1.8
         with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          username: ${{ secrets.EC2_USERNAME }}
-          host: ${{ secrets.EC2_PUBLIC_IP }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          username: ubuntu
+          host: ec2-13-215-248-36.ap-southeast-1.compute.amazonaws.com
           source: ./
-          target: ${{ secrets.TARGET_DIR }}
+          target: /var/www/html/server
           exclude: /.git/, /.github/, .gitignore, README.md
           # script_after: |
           #   cd /home/ec2-user/${{ env.APP_DIR }}
