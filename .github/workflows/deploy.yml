@@ -28,35 +28,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Create .env file
-        run: |
-          touch .env
-          echo APP_NAME="$APP_NAME" >> .env
-          echo APP_URL="$APP_URL" >> .env
-          echo APP_PORT="$APP_PORT" >> .env
-          echo APP_ENV="$APP_ENV" >> .env
+      # - name: Create .env file
+      #   run: |
+      #     touch .env
+      #     echo APP_NAME="$APP_NAME" >> .env
+      #     echo APP_URL="$APP_URL" >> .env
+      #     echo APP_PORT="$APP_PORT" >> .env
+      #     echo APP_ENV="$APP_ENV" >> .env
           
-          echo DB_CONNECTION="$DB_CONNECTION" >> .env
-          echo DB_HOST="$DB_HOST" >> .env
-          echo DB_PORT="$DB_PORT" >> .env
-          echo DB_USER="$DB_USER" >> .env
-          echo DB_PASSWORD="$DB_PASSWORD" >> .env
-          echo DB_NAME="$DB_NAME" >> .env          
+      #     echo DB_CONNECTION="$DB_CONNECTION" >> .env
+      #     echo DB_HOST="$DB_HOST" >> .env
+      #     echo DB_PORT="$DB_PORT" >> .env
+      #     echo DB_USER="$DB_USER" >> .env
+      #     echo DB_PASSWORD="$DB_PASSWORD" >> .env
+      #     echo DB_NAME="$DB_NAME" >> .env          
           
-          echo "cat .env"
-          cat .env
-          echo "ls -a ."
-          ls -a .
+      #     echo "cat .env"
+      #     cat .env
+      #     echo "ls -a ."
+      #     ls -a .
 
-          echo "ls -a ${{ github.workspace }}"
-          ls -a ${{ github.workspace }}
-        shell: bash
+      #     echo "ls -a ${{ github.workspace }}"
+      #     ls -a ${{ github.workspace }}
+      #   shell: bash
 
-      - name: Install PHP and dependencies
-        run: sudo apt-get update && sudo apt-get install php php-mbstring php-xml
+      # - name: Install PHP and dependencies
+      #   run: sudo apt-get update && sudo apt-get install php php-mbstring php-xml
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      # - name: Install Composer dependencies
+      #   run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Deploy to EC2
         uses: easingthemes/ssh-deploy@main
