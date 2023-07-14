@@ -62,7 +62,7 @@ jobs:
       #   uses: easingthemes/ssh-deploy@main
       #   env:
       #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     REMOTE_HOST: ${{ secrets.EC2_PUBLIC_IP }}
+      #     REMOTE_HOST: ${{ secrets.SSH_PRIVATE_KEYEC2_PUBLIC_IP }}
       #     REMOTE_USER: ${{ secrets.EC2_USERNAME }}
       #     REMOTE_PORT: 22
       #     TARGET: ${{ secrets.TARGET_DIR }}
@@ -70,12 +70,20 @@ jobs:
       # - name: Clear SSH key
       #   run: rm ~/.ssh/id_rsa
 
+      # - name: Deploy to production
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     username: ubuntu
+      #     host: YOUR SERVER'S HOSTNAME GOES HERE
+      #     password: ${{ secrets.SSH_PASSWORD }}
+      #     script: 'cd /var/www/html && ./server_deploy.sh'
+
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@v4.1.8
         with:
           key: ${{ env.SSH_PRIVATE_KEY }}
           username: ubuntu
-          host: ec2-13-215-248-36.ap-southeast-1.compute.amazonaws.com
+          host: ec2-18-141-234-79.ap-southeast-1.compute.amazonaws.com
           source: ./
           target: /var/www/html/server
           exclude: /.git/, /.github/, .gitignore, README.md
