@@ -13,6 +13,7 @@ env:
   SOURCE: "./"
   EXCLUDE: /.git/, /.github/, .gitignore, README.md
   SCRIPT_AFTER: | 
+   cd /var/html/server
    php artisan down
    php artisan migrate
    php artisan up
