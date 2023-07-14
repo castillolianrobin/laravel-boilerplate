@@ -14,7 +14,6 @@ env:
   EXCLUDE: /.git/, /.github/, .gitignore, README.md
   SCRIPT_AFTER: | 
     cd ${{ secrets.TARGET_DIR }}
-    ls
     php artisan down
     php artisan migrate
     php artisan up
