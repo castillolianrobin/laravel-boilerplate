@@ -5,19 +5,20 @@ on:
       - main
 
 env:
+  # DEPLOYMENT VARIABLES
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   REMOTE_USER: ${{ secrets.EC2_USERNAME }}
   REMOTE_HOST: ${{ secrets.EC2_PUBLIC_IP }}
+  TARGET: ${{ secrets.TARGET_DIR }}
+  SOURCE: "./"
+  EXCLUDE: /.git/, /.github/, .gitignore, README.md
+  SCRIPT_AFTER: | 
+   php artisan down
+   php artisan migrate
+   php artisan up
+  # APP VARIABLE
   APP_NAME: ${{ secrets.APP_NAME }}
   APP_ENV: production
-  # DATABASE VARIABLES
-  DB_CONNECTION: ${{ secrets.DB_CONNECTION }}
-  DB_HOST: ${{ secrets.DB_HOST }}
-  DB_PORT: ${{ secrets.DB_PORT }}
-  DB_USER: ${{ secrets.DB_USER }}
-  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  DB_NAME: ${{ secrets.DB_NAME }}
-  # SMTP VARIABLE   
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -27,66 +28,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      # - name: Create .env file
-      #   run: |
-      #     touch .env
-      #     echo APP_NAME="$APP_NAME" >> .env
-      #     echo APP_URL="$APP_URL" >> .env
-      #     echo APP_PORT="$APP_PORT" >> .env
-      #     echo APP_ENV="$APP_ENV" >> .env
-          
-      #     echo DB_CONNECTION="$DB_CONNECTION" >> .env
-      #     echo DB_HOST="$DB_HOST" >> .env
-      #     echo DB_PORT="$DB_PORT" >> .env
-      #     echo DB_USER="$DB_USER" >> .env
-      #     echo DB_PASSWORD="$DB_PASSWORD" >> .env
-      #     echo DB_NAME="$DB_NAME" >> .env          
-          
-      #     echo "cat .env"
-      #     cat .env
-      #     echo "ls -a ."
-      #     ls -a .
-
-      #     echo "ls -a ${{ github.workspace }}"
-      #     ls -a ${{ github.workspace }}
-      #   shell: bash
-
-      # - name: Install PHP and dependencies
-      #   run: sudo apt-get update && sudo apt-get install php php-mbstring php-xml
-
-      # - name: Install Composer dependencies
-      #   run: composer install --no-interaction --prefer-dist --optimize-autoloader
-
-      # - name: Deploy to EC2
-      #   uses: easingthemes/ssh-deploy@main
-      #   env:
-      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     REMOTE_HOST: ${{ secrets.SSH_PRIVATE_KEYEC2_PUBLIC_IP }}
-      #     REMOTE_USER: ${{ secrets.EC2_USERNAME }}
-      #     REMOTE_PORT: 22
-      #     TARGET: ${{ secrets.TARGET_DIR }}
-
-      # - name: Clear SSH key
-      #   run: rm ~/.ssh/id_rsa
-
-      # - name: Deploy to production
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     username: ubuntu
-      #     host: YOUR SERVER'S HOSTNAME GOES HERE
-      #     password: ${{ secrets.SSH_PASSWORD }}
-      #     script: 'cd /var/www/html && ./server_deploy.sh'
 
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@v4.1.8
         with:
-          key: ${{ env.SSH_PRIVATE_KEY }}
-          username: ubuntu
+          # key: ${{ env.SSH_PRIVATE_KEY }}
+          # username: ubuntu
           # host: ec2-18-141-234-79.ap-southeast-1.compute.amazonaws.com
-          source: ./
-          target: /var/www/server
-          exclude: /.git/, /.github/, .gitignore, README.md
+          # source: ./
+          # target: /var/www/server
+          # exclude: /.git/, /.github/, .gitignore, README.md
           # script_after: |
           #   cd /home/ec2-user/${{ env.APP_DIR }}
           #   npm install --production
