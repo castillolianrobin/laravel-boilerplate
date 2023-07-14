@@ -26,5 +26,5 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/test', function () {
-    return 'Hello liana 2';
+    return 'Hello liana 3';
 });
