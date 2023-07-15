@@ -25,8 +25,3 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json('Success', 200);
     });
 });
-
-
-Route::get('alec', function () {
-    return response()->json('Tangina mo Alec hahaahha', 200);
-});
