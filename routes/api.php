@@ -25,3 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json('Success', 200);
     });
 });
+
+
+// Lian's private API
+Route::prefix('lian')->group(function () {
+    Route::apiResource('snake-score', App\Http\Controllers\API\SnakeScoreController::class);
+});
