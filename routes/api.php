@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 | 
 */
 
+
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -22,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-Route::get('/test', function () {
-    return 'Hello liana 3';
+
+Route::get('alec', function () {
+    return response()->json('Tangina mo Alec hahaahha', 200);
 });
