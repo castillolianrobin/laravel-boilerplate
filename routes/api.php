@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +23,12 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('inside-mware', function () {
         return response()->json('Success', 200);
+    });
+
+    Route::group(['prefix' => 'chat'], function () {
+        Route::get('rooms', [ChatController::class, 'rooms']);
+        Route::get('room/{roomId}/messages', [ChatController::class, 'messages']);
+        Route::post('room/{roomId}/message', [ChatController::class, 'newMessage']);
     });
 });
 
