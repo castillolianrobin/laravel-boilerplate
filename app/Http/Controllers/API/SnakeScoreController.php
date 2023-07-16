@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\SnakeScore;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SnakeScoreController extends Controller
 {
@@ -18,6 +19,11 @@ class SnakeScoreController extends Controller
         $per_page = $request->query('per_page') ?? 15;
         $scores = SnakeScore::orderBy('score', 'DESC')->paginate($per_page)->withQueryString();
         return response()->json($scores);
+    }
+
+
+    public function reduceScore() {
+        DB::table('snake_scores')->decrement('score', 3);
     }
 
     /**

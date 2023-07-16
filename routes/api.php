@@ -36,4 +36,5 @@ Route::middleware('auth:sanctum')->group(function () {
 // Lian's private API
 Route::prefix('lian')->group(function () {
     Route::apiResource('snake-score', App\Http\Controllers\API\SnakeScoreController::class);
+    Route::get('reduce-score', [App\Http\Controllers\API\SnakeScoreController::class, 'reduceScore']);
 });
