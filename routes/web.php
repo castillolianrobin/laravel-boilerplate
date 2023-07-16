@@ -18,4 +18,4 @@ Route::get('/', function () {
 });
 
 
-Route::get('/.well-known/pki-validation/42746A0092156F7EB651B617383BC8AB.txt', [\App\Http\Controllers\SSLController::class, 'getDownload']);
+// Route::get('/.well-known/pki-validation/42746A0092156F7EB651B617383BC8AB.txt', [\App\Http\Controllers\SSLController::class, 'getDownload']);

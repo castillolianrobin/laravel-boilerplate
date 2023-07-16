@@ -21,11 +21,6 @@ class SnakeScoreController extends Controller
         return response()->json($scores);
     }
 
-
-    public function reduceScore() {
-        DB::table('snake_scores')->decrement('score', 3);
-    }
-
     /**
      * Store a newly created resource in storage.
      *
