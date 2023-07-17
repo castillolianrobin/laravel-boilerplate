@@ -31,7 +31,7 @@ class AuthController extends Controller
         catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
-                'message' => 'Something went wrong in AuthController.register'
+                'error_message' => 'Something went wrong in AuthController.register'
             ]);
         }
     }
@@ -57,7 +57,7 @@ class AuthController extends Controller
         catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
-                'message' => 'Something went wrong in AuthController.login'
+                'error_message' => 'Something went wrong in AuthController.login'
             ]);
         }
     }
@@ -74,7 +74,7 @@ class AuthController extends Controller
         catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
-                'message' => 'Something went wrong in AuthController.logout'
+                'error_message' => 'Something went wrong in AuthController.logout'
             ]);
         }
     }

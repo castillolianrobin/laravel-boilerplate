@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json('Success', 200);
     });
 
-    Route::group(['prefix' => 'chat'], function () {
-        Route::get('rooms', [ChatController::class, 'rooms']);
-        Route::get('room/{roomId}/messages', [ChatController::class, 'messages']);
-        Route::post('room/{roomId}/message', [ChatController::class, 'newMessage']);
+    Route::prefix('chat')->group(function () {
+        Route::apiResource('rooms', \App\Http\Controllers\API\ChatRoomController::class);
+        Route::resource('rooms.messages', \App\Http\Controllers\API\ChatRoomMessageController::class)->shallow();
     });
 });
 
