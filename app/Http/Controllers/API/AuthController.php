@@ -39,7 +39,13 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            $user = User::where('email', '=', $request->input('email'))->firstOrFail();
+            $user = User::where('email', '=', $request->input('email'))->first();
+            
+            if (!$user) {
+                return response()->json([
+                    'error' => 'User not found'
+                ], 400);
+            }
 
             if (Hash::check($request->input('password'), $user->password)) {
                 $token = $user->createToken('user_token')->plainTextToken;
@@ -48,11 +54,11 @@ class AuthController extends Controller
                     'user' => $user,
                     'token' => $token
                 ], 200);
-            } else {
-                return response()->json([
-                    'error' => 'Incorrect credentials'
-                ]);
             }
+
+            return response()->json([
+                'error' => 'Incorrect credentials'
+            ], 400);
         }
         catch (\Exception $e) {
             return response()->json([
