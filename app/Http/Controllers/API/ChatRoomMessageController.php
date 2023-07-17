@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChatRoomMessage;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Chat\ChatRoomMessageRequest;
+use App\Models\ChatRoom;
 
 class ChatRoomMessageController extends Controller
 {
@@ -17,20 +20,21 @@ class ChatRoomMessageController extends Controller
     public function index($roomId)
     {
         try {
+            // Get messages
             $messages = ChatRoomMessage::where('room_id', $roomId)
-            ->with('user')
-            ->orderBy('created_at', 'DESC')
-            ->get();
+                ->with('user')
+                ->orderBy('created_at', 'DESC')
+                ->get();
+
+            // If no messages found
+            if (!count($messages)) {
+                return ApiResponse::noContent(config('constants.CHAT_ROOM_MESSAGES_EMPTY'));
+            }
     
-            return response()->json([
-                'chat_room_messages' => $messages,
-            ], 200);
+            return ApiResponse::success(null, $messages);
         }
         catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'message' => 'Something went wrong in ChatRoomMessageController.index'
-            ]);
+            return ApiResponse::serverError($e->getMessage());
         }
     }
 
@@ -50,22 +54,35 @@ class ChatRoomMessageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store($roomId, Request $request)
+    public function store($roomId, ChatRoomMessageRequest $request)
     {
         try {
+            // Get room
+            $room = ChatRoom::where('id', $roomId)->exists();
+
+            // If room doesn't exist
+            if (!$room) {
+                return ApiResponse::noContent(config('constants.CHAT_ROOM_NOT_FOUND'));
+            }
+
             $message = ChatRoomMessage::create([
                 'sender_id' => Auth::id(),
                 'room_id' => $roomId,
                 'message' => $request->message,
             ]);
+
+            // If message is not created
+            if (!$message) {
+                return ApiResponse::noContent(config('constants.CHAT_ROOM_CREATE_MESSAGE_SUCCESSFUL'));
+            }
     
-            return response()->json($message, 200);
+            return ApiResponse::created(config(
+                'constants.CHAT_ROOM_CREATE_MESSAGE_SUCCESSFUL'),
+                $message,
+            );
         }
         catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'error_message' => 'Something went wrong in ChatRoomMessageController.store'
-            ]);
+            return ApiResponse::serverError($e->getMessage());
         }
     }
 
