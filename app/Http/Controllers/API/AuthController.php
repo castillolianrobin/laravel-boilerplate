@@ -52,7 +52,7 @@ class AuthController extends Controller
             
             // If user doesn't exist
             if (!$user) {
-                return ApiResponse::noContent(config('constants.USER_NOT_FOUND'));
+                return ApiResponse::unauthorized(config('constants.USER_NOT_FOUND'));
             }
 
             // If password is correct
