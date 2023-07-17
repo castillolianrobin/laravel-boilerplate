@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChatRoom;
@@ -16,15 +17,18 @@ class ChatRoomController extends Controller
     public function index()
     {
         try {
+            // Get all rooms
             $rooms = ChatRoom::all();
 
-            return response()->json($rooms, 200);
+            // If no rooms found
+            if (!$rooms) {
+                return ApiResponse::noContent(config('constants.CHAT_ROOMS_EMPTY'));
+            }
+
+            return ApiResponse::success(null, $rooms);
         }
         catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'error_message' => 'Something went wrong in ChatRoomController.index'
-            ]);
+            return ApiResponse::serverError($e->getMessage());
         }
     }
 

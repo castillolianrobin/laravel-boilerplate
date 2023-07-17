@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\LogoutRequest;
@@ -14,57 +15,64 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         try {
+            // Create user
             $user = User::create([
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'email' => $request->input('email'),
                 'password' => Hash::make($request->input('password'))
             ]);
-    
+
+            // If user is not created
+            if (!$user) {
+                return ApiResponse::noContent(config('constants.REGISTRATION_UNSUCCESSFUL'));
+            }
+
+            // Create token
             $token = $user->createToken('user_token')->plainTextToken;
-    
-            return response()->json([
-                'user' => $user,
-                'token' => $token
-            ], 200);
+
+            return ApiResponse::created(
+                config('constants.REGISTRATION_SUCCESSFUL'),
+                [
+                    'user' => $user,
+                    'token' => $token
+                ]
+            );
         }
         catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'error_message' => 'Something went wrong in AuthController.register'
-            ]);
+            return ApiResponse::serverError($e->getMessage());
         }
     }
 
     public function login(LoginRequest $request)
     {
         try {
+            // Find user
             $user = User::where('email', '=', $request->input('email'))->first();
             
+            // If user doesn't exist
             if (!$user) {
-                return response()->json([
-                    'error' => 'User not found'
-                ], 400);
+                return ApiResponse::noContent(config('constants.USER_NOT_FOUND'));
             }
 
+            // If password is correct
             if (Hash::check($request->input('password'), $user->password)) {
+                // Create token
                 $token = $user->createToken('user_token')->plainTextToken;
     
-                return response()->json([
-                    'user' => $user,
-                    'token' => $token
-                ], 200);
+                return ApiResponse::success(
+                    config('constants.LOGIN_SUCCESSFUL'),
+                    [
+                        'user' => $user,
+                        'token' => $token
+                    ]
+                );
             }
 
-            return response()->json([
-                'error' => 'Incorrect credentials'
-            ], 400);
+            return ApiResponse::error(config('constants.LOGIN_UNSUCCESSFUL'));
         }
         catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'error_message' => 'Something went wrong in AuthController.login'
-            ]);
+            return ApiResponse::serverError($e->getMessage());
         }
     }
 
@@ -73,15 +81,16 @@ class AuthController extends Controller
         try {
             $user = User::findOrFail($request->input('user_id'));
     
-            $user->tokens()->delete();
+            $deleteUser = $user->tokens()->delete();
+
+            if (!$deleteUser) {
+                return ApiResponse::noContent(config('constants.LOGOUT_UNSUCCESSFUL'));
+            }
     
-            return response()->json('User logged out!', 200);
+            return ApiResponse::success(config('constants.LOGOUT_SUCCESSFUL'));
         }
         catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'error_message' => 'Something went wrong in AuthController.logout'
-            ]);
+            return ApiResponse::serverError($e->getMessage());
         }
     }
 }
