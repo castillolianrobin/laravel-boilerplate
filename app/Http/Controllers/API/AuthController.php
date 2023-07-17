@@ -69,7 +69,7 @@ class AuthController extends Controller
                 );
             }
 
-            return ApiResponse::error(config('constants.LOGIN_UNSUCCESSFUL'));
+            return ApiResponse::unauthorized(config('constants.LOGIN_UNSUCCESSFUL'));
         }
         catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
