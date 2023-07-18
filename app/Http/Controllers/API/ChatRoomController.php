@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\MessageCreated;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -9,6 +10,11 @@ use App\Models\ChatRoom;
 
 class ChatRoomController extends Controller
 {
+    
+    public function testEvent() {
+        MessageCreated::dispatch('test');
+        return response()->json('Sent');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -38,9 +44,7 @@ class ChatRoomController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //
-    }
+    {}
 
     /**
      * Store a newly created resource in storage.
@@ -50,7 +54,17 @@ class ChatRoomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $room = ChatRoom::create([
+                'name' => $request->input('name')
+            ]);
+            
+            return ApiResponse::success('New room created!', $room);
+        } catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
+
+        
     }
 
     /**

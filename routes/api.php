@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 | 
 */
 
-
+Route::get('test-pusher', [\App\Http\Controllers\API\ChatRoomController::class, 'testEvent']);
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register']);
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login']);
 
