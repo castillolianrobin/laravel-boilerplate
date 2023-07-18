@@ -27,7 +27,7 @@ class ChatRoomController extends Controller
             $rooms = ChatRoom::all();
 
             // If no rooms found
-            if (!$rooms) {
+            if (!count($rooms)) {
                 return ApiResponse::noContent(config('constants.CHAT_ROOMS_EMPTY'));
             }
 

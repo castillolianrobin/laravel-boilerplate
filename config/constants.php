@@ -59,6 +59,9 @@ return [
 
     'USER_NOT_FOUND' => 'User not found',
 
+
+    // Chat
+
     'CHAT_ROOM_CREATE_MESSAGE_SUCCESSFUL' => 'Message delivered',
 
     'CHAT_ROOM_CREATE_MESSAGE_UNSUCCESSFUL' => 'Message delivered',
