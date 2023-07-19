@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\MessageCreated;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -67,15 +68,19 @@ class ChatRoomMessageController extends Controller
 
             $message = ChatRoomMessage::create([
                 'sender_id' => Auth::id(),
-                'room_id' => $roomId,
+                'room_id' => (integer) $roomId,
                 'message' => $request->message,
             ]);
+            
 
             // If message is not created
             if (!$message) {
                 return ApiResponse::noContent(config('constants.CHAT_ROOM_CREATE_MESSAGE_SUCCESSFUL'));
             }
-    
+            
+            // Emit message created event
+            MessageCreated::dispatch($message);
+            
             return ApiResponse::created(config(
                 'constants.CHAT_ROOM_CREATE_MESSAGE_SUCCESSFUL'),
                 $message,

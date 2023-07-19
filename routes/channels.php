@@ -16,3 +16,9 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+
+/** Authenticate room in the future */
+Broadcast::channel('room.{roomId}', function ($user) {
+    return true;
+});

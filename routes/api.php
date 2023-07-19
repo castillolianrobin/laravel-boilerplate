@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +18,14 @@ Route::get('test-pusher', [\App\Http\Controllers\API\ChatRoomController::class, 
 Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register']);
 Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login']);
 
+
 Route::middleware('auth:sanctum')->group(function () {
+    
+    /** Broadcasting Authentication */
+    Broadcast::routes();
+    
+    /** Authenticated API */
+    
     Route::post('logout', [\App\Http\Controllers\API\AuthController::class, 'logout']);
     
     Route::get('inside-mware', function () {
@@ -29,7 +37,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::resource('rooms.messages', \App\Http\Controllers\API\ChatRoomMessageController::class)->shallow();
     });
 });
-
 
 // Lian's private API
 Route::prefix('lian')->group(function () {

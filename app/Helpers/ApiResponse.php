@@ -64,9 +64,9 @@ class ApiResponse
     public static function noContent($message=null, $data=null)
     {
       return self::success(
-        $message ?? config('constants.CREATED.MESSAGE'),
+        $message ?? config('constants.NO_CONTENT.MESSAGE'),
         $data,
-        config('constants.CREATED.CODE'),
+        config('constants.NO_CONTENT.CODE'),
       );
     }
 }

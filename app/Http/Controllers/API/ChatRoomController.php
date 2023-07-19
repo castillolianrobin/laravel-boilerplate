@@ -19,7 +19,7 @@ class ChatRoomController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */
+     */ 
     public function index()
     {
         try {
@@ -60,7 +60,8 @@ class ChatRoomController extends Controller
             ]);
             
             return ApiResponse::success('New room created!', $room);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
 
@@ -75,7 +76,18 @@ class ChatRoomController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $room = ChatRoom::find($id);
+
+            if (!$room) {
+                return ApiResponse::noContent();
+            }
+
+            return ApiResponse::success(null, $room);
+        }
+        catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
     /**
