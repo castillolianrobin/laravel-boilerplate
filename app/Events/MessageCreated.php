@@ -39,7 +39,7 @@ class MessageCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('room.'.$this->roomId);
+        return new PresenceChannel('room.'.$this->roomId);
     }
 
     /**

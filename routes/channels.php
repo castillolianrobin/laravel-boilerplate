@@ -20,5 +20,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 /** Authenticate room in the future */
 Broadcast::channel('room.{roomId}', function ($user) {
-    return true;
+    Log::debug('pusher test.', ['user'=>$user]);
+    return $user;
 });
