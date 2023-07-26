@@ -52,6 +52,16 @@ class ApiResponse
       );
     }
 
+    public static function forbidden($errors=null, $data=null)
+    {
+      return self::error(
+        config('constants.FORBIDDEN.MESSAGE'),
+        $errors,
+        $data,
+        config('constants.FORBIDDEN.CODE'),
+      );
+    }
+
     public static function created($message=null, $data=null)
     {
       return self::success(
