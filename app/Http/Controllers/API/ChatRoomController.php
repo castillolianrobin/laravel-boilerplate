@@ -7,14 +7,11 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChatRoom;
+use App\Models\ChatRoomMembers;
+use Illuminate\Support\Facades\Auth;
 
 class ChatRoomController extends Controller
 {
-    
-    public function testEvent() {
-        MessageCreated::dispatch('test');
-        return response()->json('Sent');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -23,9 +20,19 @@ class ChatRoomController extends Controller
     public function index()
     {
         try {
-            // Get all rooms
-            $rooms = ChatRoom::all();
-
+            $userId = Auth::id();
+            $privateRoomId = ChatRoomMembers::
+                where('user_id', $userId)
+                ->pluck('chat_room_id')
+                ->toArray();
+            
+            // Fetch chat rooms
+            $rooms = ChatRoom::
+                withCount('members')
+                ->where('is_private', 0)
+                ->orWhereIn('id', $privateRoomId)
+                ->get();
+            
             // If no rooms found
             if (!count($rooms)) {
                 return ApiResponse::noContent(config('constants.CHAT_ROOMS_EMPTY'));
@@ -43,8 +50,7 @@ class ChatRoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {}
+    // public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -56,9 +62,19 @@ class ChatRoomController extends Controller
     {
         try {
             $room = ChatRoom::create([
-                'name' => $request->input('name')
+                'name' => $request->input('name'),
+                'is_private' => (bool) $request->input('is_private') ?? false,
             ]);
+
+            $user = Auth::user();
             
+            // Creator as admin
+            ChatRoomMembers::create([
+                'user_id' => $user->id,
+                'chat_room_id' => $room->id,
+                'is_admin' => true,
+            ]);
+
             return ApiResponse::success('New room created!', $room);
         }
         catch (\Exception $e) {
@@ -77,11 +93,18 @@ class ChatRoomController extends Controller
     public function show($id)
     {
         try {
-            $room = ChatRoom::find($id);
-
-            if (!$room) {
+            $room = ChatRoom::with('members')->find($id);
+            
+            $forbidden = false;
+            if ($room->is_private) {
+                $members = $room->members()->find((integer) Auth::id());
+                $forbidden = is_null($members);
+            }
+            
+            if (!$room || $forbidden) {
                 return ApiResponse::noContent();
             }
+
 
             return ApiResponse::success(null, $room);
         }
