@@ -7,7 +7,7 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChatRoom;
-use App\Models\ChatRoomMembers;
+use App\Models\ChatRoomMember;
 use Illuminate\Support\Facades\Auth;
 
 class ChatRoomController extends Controller
@@ -21,7 +21,7 @@ class ChatRoomController extends Controller
     {
         try {
             $userId = Auth::id();
-            $privateRoomId = ChatRoomMembers::
+            $privateRoomId = ChatRoomMember::
                 where('user_id', $userId)
                 ->pluck('chat_room_id')
                 ->toArray();
@@ -69,7 +69,7 @@ class ChatRoomController extends Controller
             $user = Auth::user();
             
             // Creator as admin
-            ChatRoomMembers::create([
+            ChatRoomMember::create([
                 'user_id' => $user->id,
                 'chat_room_id' => $room->id,
                 'is_admin' => true,
@@ -154,12 +154,31 @@ class ChatRoomController extends Controller
     public function destroy($id)
     {
         try {
+            if (!$this->isRoomAdmin($id)) {
+                return ApiResponse::unauthorized('You do not have enough access to delete this');
+            }
+            
             $room = ChatRoom::find($id);
             $room->delete();
             return ApiResponse::success('Room deleted successfully.', $room);
-        } 
+        }
         catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
+    }
+
+    /**
+     * Check if logged in user has admin rights to the room
+     * 
+     * @param int $roomId
+     * @return boolean
+     */
+    private function isRoomAdmin($roomId) {
+        $roomMembership = ChatRoomMember::where([
+            ['user_id', '=', Auth::id()],
+            ['chat_room_id', '=', $roomId],
+        ])->first();
+        
+        return is_null($roomMembership) || !$roomMembership->is_admin;
     }
 }
