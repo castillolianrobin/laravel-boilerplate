@@ -38,7 +38,7 @@ return [
     ],
 
     'NO_CONTENT' => [
-        'CODE' => 204,
+        'CODE' => 200,
         'MESSAGE' => 'No content',
     ],
 
