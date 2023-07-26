@@ -94,8 +94,8 @@ class ChatRoomController extends Controller
     {
         try {
             $room = ChatRoom::with('members')->find($id);
-            
             $forbidden = false;
+            
             if ($room->is_private) {
                 $members = $room->members()->find((integer) Auth::id());
                 $forbidden = is_null($members);
@@ -133,7 +133,16 @@ class ChatRoomController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $room = ChatRoom::find($id);
+            $room->name = $request->input('name') ?? $room->name;
+            $room->save();
+            
+            return ApiResponse::success('Room updated successfully', $room);
+        } 
+        catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 
     /**
@@ -144,6 +153,13 @@ class ChatRoomController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $room = ChatRoom::find($id);
+            $room->delete();
+            return ApiResponse::success('Room deleted successfully.', $room);
+        } 
+        catch (\Exception $e) {
+            return ApiResponse::serverError($e->getMessage());
+        }
     }
 }
