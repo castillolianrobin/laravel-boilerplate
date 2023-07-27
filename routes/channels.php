@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\ChatRoomMember;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +20,21 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 
-/** Authenticate room in the future */
-Broadcast::channel('room.{roomId}', function ($user) {
-    Log::debug('pusher test.', ['user'=>$user]);
-    return $user;
+/** Authenticate room membership */
+Broadcast::channel('room.{room}', function ($user, $room) {
+    $roomMembership = ChatRoomMember::where([
+        ['user_id', '=', $user->id],
+        ['chat_room_id', '=', $room],
+    ])->first();
+    
+    Log::debug('pusher test.', [
+        'user'=>$user,
+        'membership'=>$roomMembership
+    ]);
+    
+    if ($roomMembership) {
+        return $user;
+    } else {
+        return null;
+    }
 });
