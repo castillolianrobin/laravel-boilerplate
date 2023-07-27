@@ -33,8 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('chat')->group(function () {
-        Route::apiResource('rooms', \App\Http\Controllers\API\ChatRoomController::class);
-        Route::resource('rooms.messages', \App\Http\Controllers\API\ChatRoomMessageController::class)->shallow();
+        Route::middleware('chatRoomMember:admin')->group(function () {
+            Route::apiResource('rooms', \App\Http\Controllers\API\ChatRoomController::class);
+            Route::resource('rooms.members', \App\Http\Controllers\API\ChatRoomMemberController::class)->shallow();
+        });
+        Route::resource('rooms.messages', \App\Http\Controllers\API\ChatRoomMessageController::class)->shallow()->middleware('chatRoomMember');
     });
 });
 

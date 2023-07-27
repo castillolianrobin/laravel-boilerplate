@@ -134,10 +134,6 @@ class ChatRoomController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            if (!$this->isRoomAdmin($id)) {
-                return ApiResponse::forbidden('You do not have enough access to delete this');
-            }
-
             $room = ChatRoom::find($id);
             $room->name = $request->input('name') ?? $room->name;
             $room->save();
@@ -158,10 +154,6 @@ class ChatRoomController extends Controller
     public function destroy($id)
     {
         try {
-            if (!$this->isRoomAdmin($id)) {
-                return ApiResponse::forbidden('You do not have enough access to delete this');
-            }
-            
             $room = ChatRoom::find($id);
             $room->delete();
             return ApiResponse::success('Room deleted successfully.', $room);
@@ -169,20 +161,5 @@ class ChatRoomController extends Controller
         catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
         }
-    }
-
-    /**
-     * Check if logged in user has admin rights to the room
-     * 
-     * @param int $roomId
-     * @return boolean
-     */
-    private function isRoomAdmin($roomId) {
-        $roomMembership = ChatRoomMember::where([
-            ['user_id', '=', Auth::id()],
-            ['chat_room_id', '=', $roomId],
-        ])->first();
-        
-        return !is_null($roomMembership) && $roomMembership->is_admin;
     }
 }
