@@ -5,9 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\LogoutRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -76,10 +76,10 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(LogoutRequest $request)
+    public function logout()
     {
         try {
-            $user = User::findOrFail($request->input('user_id'));
+            $user = User::findOrFail(Auth::id());
     
             $deleteUser = $user->tokens()->delete();
 
