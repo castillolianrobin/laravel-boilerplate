@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChatRoomMember;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChatRoomMemberController extends Controller
 {
@@ -124,5 +125,23 @@ class ChatRoomMemberController extends Controller
         $membership = ChatRoomMember::find($id);
         $membership->delete();
         return ApiResponse::success('Member is no longer available to chat.', $membership);
+    }
+
+    /**
+     * Remove resource related to logged in user
+     */
+    public function removeMembership($roomId) {
+        $membership = ChatRoomMember::
+            where([
+                ['user_id', Auth::id()],
+                ['chat_room_id', $roomId],
+            ])
+            ->first();
+        
+        if(is_null($membership)) {
+            return ApiResponse::error('You are not a member of this room');
+        }
+
+        return $this->destroy($membership->id);
     }
 }

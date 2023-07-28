@@ -38,6 +38,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::resource('rooms.members', \App\Http\Controllers\API\ChatRoomMemberController::class)->shallow();
         });
         Route::resource('rooms.messages', \App\Http\Controllers\API\ChatRoomMessageController::class)->shallow()->middleware('chatRoomMember');
+        
+        // Leave specified room
+        Route::post('rooms/{room}/members/leave',[ \App\Http\Controllers\API\ChatRoomMemberController::class, 'removeMembership' ]);
     });
 });
 
