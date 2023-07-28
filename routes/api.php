@@ -44,7 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-Route::get('env', function () { return response()->json($_ENV); });
+Route::get('env', function () { return response()->json(env('BROADCAST_DRIVER')); });
 
 // Lian's private API
 Route::prefix('lian')->group(function () {
