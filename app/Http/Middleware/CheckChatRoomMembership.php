@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\ApiResponse;
+use App\Models\ChatRoom;
 use App\Models\ChatRoomMember;
 use Closure;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class CheckChatRoomMembership
             // If admin restricted
             $adminRestrictedActions = ['PUT', 'DELETE', 'POST', 'PATCH'];
             $requestAction = $request->method();
-            if ($role === 'admin' && !$membership->is_admin && in_array($requestAction, $adminRestrictedActions)) {
+            if ($role === 'admin' && !$membership === 'admin' && in_array($requestAction, $adminRestrictedActions)) {
                 return ApiResponse::forbidden('You do not have enough permission to perform this action');
             }
         }
@@ -44,7 +45,7 @@ class CheckChatRoomMembership
      * Check if logged in user has membership rights to the room
      *
      * @param int $roomId
-     * @return ChatRoomMember
+     * @return 'admin' | 'member' | null
      */
     public function isRoomMember($roomId) {
         $roomMembership = ChatRoomMember::where([
@@ -52,6 +53,11 @@ class CheckChatRoomMembership
             ['chat_room_id', '=', $roomId],
         ])->first();
         
-        return $roomMembership;
+        if ($roomMembership) {
+            return $roomMembership->is_admin ? 'admin' : 'member';
+        } else {
+            $room = ChatRoom::find($roomId);
+            return $room->is_private ? null : 'member';
+        }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ChatRoom;
 use App\Models\ChatRoomMember;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +36,7 @@ Broadcast::channel('room.{room}', function ($user, $room) {
     if ($roomMembership) {
         return $user;
     } else {
-        return null;
+        $room = ChatRoom::find($room);
+        return $room->is_private ? null : $user;
     }
 });
