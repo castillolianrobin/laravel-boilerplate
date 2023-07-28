@@ -17,6 +17,7 @@ env:
     sudo composer install
     php artisan down
     php artisan migrate
+    php artisan config:clear
     php artisan config:cache
     php artisan up
   # APP VARIABLE
