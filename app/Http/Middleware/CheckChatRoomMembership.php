@@ -20,18 +20,19 @@ class CheckChatRoomMembership
     public function handle(Request $request, Closure $next, string $role = 'member')
     {
         $roomId = $request->route()->parameter('room');
-        
-        // If not member
-        $membership = $this->isRoomMember($roomId);
-        if (is_null($membership)) {
-            return ApiResponse::forbidden('You are not a member of this chat room');
-        }
-        
-        // If admin restricted
-        $adminRestrictedActions = ['PUT', 'DELETE', 'POST', 'PATCH'];
-        $requestAction = $request->method();
-        if ($role === 'admin' && !$membership->is_admin && in_array($requestAction, $adminRestrictedActions)) {
-            return ApiResponse::forbidden('You do not have enough permission to perform this action');
+        if (!is_null($roomId)) {
+            // If not member
+            $membership = $this->isRoomMember($roomId);
+            if (is_null($membership)) {
+                return ApiResponse::forbidden('You are not a member of this chat room');
+            }
+            
+            // If admin restricted
+            $adminRestrictedActions = ['PUT', 'DELETE', 'POST', 'PATCH'];
+            $requestAction = $request->method();
+            if ($role === 'admin' && !$membership->is_admin && in_array($requestAction, $adminRestrictedActions)) {
+                return ApiResponse::forbidden('You do not have enough permission to perform this action');
+            }
         }
 
         return $next($request);
