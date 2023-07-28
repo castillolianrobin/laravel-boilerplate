@@ -54,24 +54,9 @@ class Handler extends ExceptionHandler
     {
         return ApiResponse::error(
             $exception->getMessage(),
-            $this->transformErrors($exception),
+            $exception->errors(),
             null,
             $exception->status
         );
-    }
-
-    // transform the error messages,
-    private function transformErrors(ValidationException $exception)
-    {
-        $errors = [];
-
-        foreach ($exception->errors() as $field => $message) {
-        $errors[] = [
-            'field' => $field,
-            'message' => $message[0],
-        ];
-        }
-
-        return $errors;
     }
 }
