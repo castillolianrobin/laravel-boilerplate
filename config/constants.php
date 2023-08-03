@@ -64,6 +64,8 @@ return [
 
     'USER_NOT_FOUND' => 'User not found',
 
+    'USERS_EMPTY' => 'No users available.',
+
 
     // Chat
 

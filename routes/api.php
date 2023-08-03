@@ -41,6 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Leave specified room
         Route::post('rooms/{room}/members/leave',[ \App\Http\Controllers\API\ChatRoomMemberController::class, 'removeMembership' ]);
+
+        Route::apiResource('users', \App\Http\Controllers\API\UserController::class);
     });
 });
 
