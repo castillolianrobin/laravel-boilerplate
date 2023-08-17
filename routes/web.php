@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserReplicationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/replicate-users', [UserReplicationController::class, 'replicate']);
 
 
 // Route::get('/.well-known/pki-validation/42746A0092156F7EB651B617383BC8AB.txt', [\App\Http\Controllers\SSLController::class, 'getDownload']);

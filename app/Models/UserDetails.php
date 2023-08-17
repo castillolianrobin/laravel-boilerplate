@@ -20,6 +20,7 @@ class UserDetails extends Model
         'last_name',
         'middle_name',
         'profile_img_url',
+        'color',
         'user_id',
     ];
 
