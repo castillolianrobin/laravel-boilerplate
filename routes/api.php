@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('logout', [\App\Http\Controllers\API\AuthController::class, 'logout']);
     
-    Route::get('inside-mware', function () {
-        return response()->json('Success', 200);
-    });
 
     Route::prefix('chat')->group(function () {
         Route::middleware('chatRoomMember:admin')->group(function () {
@@ -46,7 +44,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', \App\Http\Controllers\API\UserController::class);
 });
 
-Route::get('env', function () { return response()->json(env('BROADCAST_DRIVER')); });
+Route::get('env', function () {
+    Storage::put('test/test/example.txt', 'TEST');
+    $test = Storage::get('test/test/example.txt');
+    echo $test;
+    echo '<br/>';
+    echo Storage::url('test/test/example.txt');
+    // return response()->json($test);
+});
 
 // Lian's private API
 Route::prefix('lian')->group(function () {
