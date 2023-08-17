@@ -75,7 +75,7 @@ class ChatRoomController extends Controller
                 'is_admin' => true,
             ]);
 
-            return ApiResponse::success('New room created!', $room);
+            return ApiResponse::created('New room created!', $room);
         }
         catch (\Exception $e) {
             return ApiResponse::serverError($e->getMessage());
@@ -93,7 +93,7 @@ class ChatRoomController extends Controller
     public function show($id)
     {
         try {
-            $room = ChatRoom::with('members')->find($id);
+            $room = ChatRoom::with('members.userDetails')->find($id);
             $forbidden = false;
             
             if ($room->is_private) {
@@ -105,7 +105,9 @@ class ChatRoomController extends Controller
                 return ApiResponse::noContent();
             }
 
-
+            // foreach ($room->members as $user) {
+            //     $->load('userDetails');
+            // }
             return ApiResponse::success(null, $room);
         }
         catch (\Exception $e) {

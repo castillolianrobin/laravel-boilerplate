@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use App\Models\UserDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,12 +23,20 @@ class AuthController extends Controller
                 'email' => $request->input('email'),
                 'password' => Hash::make($request->input('password'))
             ]);
+            
+            $userDetails = UserDetails::create([
+                'user_id' => $user->id,
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'middle_name' => $request->input('middle_name'),
+                // 'profile_img_' => $request->input('middle_name'),
+            ]);
 
             // If user is not created
-            if (!$user) {
+            if (!$user || !$userDetails) {
                 return ApiResponse::noContent(config('constants.REGISTRATION_UNSUCCESSFUL'));
             }
-
+                          
             // Create token
             $token = $user->createToken('user_token')->plainTextToken;
 
@@ -40,6 +49,14 @@ class AuthController extends Controller
             );
         }
         catch (\Exception $e) {
+            // Delete any failed instances
+            $user = User::where('email', '=', $request->input('email'))->first();
+            if ($user) {
+                $user->delete();
+                UserDetails::where('user_id', '=', $user->id)
+                    ->delete();
+            }
+
             return ApiResponse::serverError($e->getMessage());
         }
     }
@@ -48,7 +65,9 @@ class AuthController extends Controller
     {
         try {
             // Find user
-            $user = User::where('email', '=', $request->input('email'))->first();
+            $user = User::with('userDetails')
+                ->where('email', '=', $request->input('email'))
+                ->first();
             
             // If user doesn't exist
             if (!$user) {
@@ -64,7 +83,7 @@ class AuthController extends Controller
                     config('constants.LOGIN_SUCCESSFUL'),
                     [
                         'user' => $user,
-                        'token' => $token
+                        'token' => $token,
                     ]
                 );
             }
