@@ -21,7 +21,8 @@ class AuthController extends Controller
                 'last_name' => $request->input('last_name'),
                 'username' => $request->input('username'),
                 'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password'))
+                'password' => Hash::make($request->input('password')),
+                'color' => $request->input('color'),
             ]);
 
             // If user is not created
