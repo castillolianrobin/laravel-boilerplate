@@ -9,11 +9,11 @@ class ApiResponse
 {
     public static function error($message=null, $errors=null, $data=null, $status=null)
     {
-      $data = ['error' => [
+      $data = [
         'message' => $message ?? config('constants.BAD_REQUEST.MESSAGE'),
         'errors' => $errors,
         'data' => $data,
-      ]];
+      ];
 
       $status = $status ?? config('constants.BAD_REQUEST.CODE');
 
@@ -22,10 +22,10 @@ class ApiResponse
 
     public static function success($message=null, $data=null, $status=null)
     {
-      $data = ['success' => [
+      $data = [
         'message' => $message ?? config('constants.SUCCESS.MESSAGE'),
         'data' => $data,
-      ]];
+      ];
 
       $status = $status ?? config('constants.SUCCESS.CODE');
 
