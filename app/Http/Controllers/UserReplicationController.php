@@ -24,13 +24,14 @@ class UserReplicationController extends Controller
                 continue;
             }
 
+            echo "Replicating user: " . $user->id . "<br>";
+            
             $userDetail = UserDetails::create([
                 'user_id' => $user->id,
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
                 'color' => $user->color,
             ]);
-            echo "Replicating user: " . $user->id . "<br>";
 
             if (!$userDetail) {
                 echo "Replication unsucessful." . "<br>";
