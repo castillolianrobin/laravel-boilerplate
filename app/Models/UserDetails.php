@@ -24,16 +24,6 @@ class UserDetails extends Model
         'user_id',
     ];
 
-    
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
      /**
      * Get the user profile image url. Returns a placeholder if no null
