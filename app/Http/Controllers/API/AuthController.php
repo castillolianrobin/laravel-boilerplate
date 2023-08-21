@@ -49,7 +49,7 @@ class AuthController extends Controller
     {
         try {
             // Find user
-            $user = User::where('email', '=', $request->input('email'))->first();
+            $user = User::with('userDetails')->where('email', '=', $request->input('email'))->first();
             
             // If user doesn't exist
             if (!$user) {
