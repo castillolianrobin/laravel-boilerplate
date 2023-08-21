@@ -27,21 +27,28 @@ Route::middleware('auth:sanctum')->group(function () {
     
     /** Authenticated API */
     
-    Route::post('logout', [\App\Http\Controllers\API\AuthController::class, 'logout']);
     
-
+    // Chat room
     Route::prefix('chat')->group(function () {
         Route::middleware('chatRoomMember:admin')->group(function () {
             Route::apiResource('rooms', \App\Http\Controllers\API\ChatRoomController::class);
             Route::resource('rooms.members', \App\Http\Controllers\API\ChatRoomMemberController::class)->shallow();
         });
-        Route::resource('rooms.messages', \App\Http\Controllers\API\ChatRoomMessageController::class)->shallow()->middleware('chatRoomMember');
+        Route::resource('rooms.messages', \App\Http\Controllers\API\ChatRoomMessageController::class)
+            ->shallow()
+            ->middleware('chatRoomMember');
         
         // Leave specified room
         Route::post('rooms/{room}/members/leave',[ \App\Http\Controllers\API\ChatRoomMemberController::class, 'removeMembership' ]);
     });
-
+    // User
+    Route::post('logout', [\App\Http\Controllers\API\AuthController::class, 'logout']);
     Route::apiResource('users', \App\Http\Controllers\API\UserController::class);
+    Route::resource('users.details', \App\Http\Controllers\API\UserDetailController::class);
+    // Settings
+    Route::prefix('settings')->group(function () {
+        Route::put('profile', [\App\Http\Controllers\API\SettingsController::class, 'updateProfile']);
+    });
 });
 
 Route::get('env', function () {
