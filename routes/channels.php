@@ -33,6 +33,8 @@ Broadcast::channel('room.{room}', function ($user, $room) {
         'membership'=>$roomMembership
     ]);
     
+    $user->load('userDetails');
+
     if ($roomMembership) {
         return $user;
     } else {
