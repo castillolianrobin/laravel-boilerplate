@@ -35,15 +35,15 @@ jobs:
 
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@v4.1.8
-        # with:
-          # key: ${{ env.SSH_PRIVATE_KEY }}
-          # username: ubuntu
-          # host: ec2-18-141-234-79.ap-southeast-1.compute.amazonaws.com
-          # source: ./
-          # target: /var/www/server
-          # exclude: /.git/, /.github/, .gitignore, README.md
-          # script_after: |
-          #   cd /home/ec2-user/${{ env.APP_DIR }}
-          #   npm install --production
-          #   npm run migrate
-          #   sudo pm2 restart app
+        with:
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          username: ubuntu
+          host: ec2-18-141-234-79.ap-southeast-1.compute.amazonaws.com
+          source: ./
+          target: /var/www/server
+          exclude: /.git/, /.github/, .gitignore, README.md
+          script_after: |
+            cd /home/ec2-user/${{ env.APP_DIR }}
+            npm install --production
+            npm run migrate
+            sudo pm2 restart app
